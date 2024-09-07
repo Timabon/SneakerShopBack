@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.swing.*;
 import java.util.List;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MainPageController {
 
     @Autowired
@@ -29,4 +32,18 @@ public class MainPageController {
     public void addUser(@RequestBody User user){
        userService.addUser(user);
     }
+
+        @PostMapping("/login")
+        public Map<String, String> submitUsername(@RequestBody Map<String, String> payload) {
+            String username = payload.get("username");
+            // Process the username here (e.g., save to database, etc.)
+
+            // Send a response back to the client
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Username received: " + username);
+            User logged_in = new User(username);
+            userService.addUser(logged_in);
+            return response;
+        }
+
 }
