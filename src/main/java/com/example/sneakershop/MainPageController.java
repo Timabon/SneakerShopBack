@@ -21,7 +21,7 @@ public class MainPageController {
         return ResponseEntity.ok("Hello it works");
     }
 
-    @GetMapping("/users")
+    @GetMapping("users")
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
