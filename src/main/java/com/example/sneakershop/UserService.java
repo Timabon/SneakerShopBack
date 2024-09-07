@@ -2,6 +2,8 @@ package com.example.sneakershop;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     UserRepository userRepository;
@@ -11,5 +13,9 @@ public class UserService {
     }
     public void addUser(User user){
         userRepository.save(user);
+    }
+
+    public List<User> getAllUsers() {
+       return userRepository.findAll();
     }
 }
