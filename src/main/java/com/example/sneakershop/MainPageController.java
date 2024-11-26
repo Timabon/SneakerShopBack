@@ -28,12 +28,9 @@ public class MainPageController {
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
-    @PostMapping("addUser")
-    public void addUser(@RequestBody User user){
-       userService.addUser(user);
-    }
 
-        @PostMapping("/login")
+
+    @PostMapping("/login")
         public Map<String, String> submitUsername(@RequestBody Map<String, String> payload) {
             String username = payload.get("username");
             // Process the username here (e.g., save to database, etc.)
@@ -42,7 +39,7 @@ public class MainPageController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Username received: " + username);
             User logged_in = new User(username);
-            userService.addUser(logged_in);
+            userService.createUser(logged_in);
             return response;
         }
 
