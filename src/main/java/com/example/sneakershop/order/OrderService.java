@@ -29,7 +29,7 @@ public class OrderService {
     }
 
     public Order getOrder(Long orderId) {
-        if(orderRepository.findById(orderId).isPresent()) {
+        if(orderRepository.findById(orderId).isEmpty()) {
             throw new ResourceNotFoundException("Order with id " + orderId + " not found");
         }
         return orderRepository.findByOrderId(orderId);

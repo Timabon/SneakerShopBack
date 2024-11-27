@@ -6,7 +6,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -16,27 +16,27 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public Product getProductById(@PathVariable("id") Long id) {
         return productService.getProductById(id);
     }
 
-    @GetMapping("/products/all")
+    @GetMapping("/all")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    @PostMapping("/products")
+    @PostMapping()
     public Product createProduct(@RequestBody Product product) {
         return productService.createProduct(product);
     }
 
-    @PutMapping("/products/{id}")
+    @PutMapping("/{id}")
     public Product updateProduct(@PathVariable("id") Long id,@RequestBody Product product) {
         return productService.updateProduct(id, product);
     }
 
-    @DeleteMapping(value = "/products/{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
     }

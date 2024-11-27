@@ -20,6 +20,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
     // Get all users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -32,14 +37,6 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
-
-    // Get user by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     // Get user by email

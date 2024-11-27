@@ -1,5 +1,6 @@
 package com.example.sneakershop.user;
 
+import com.example.sneakershop.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Get a user by ID
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     // Get a user by email
