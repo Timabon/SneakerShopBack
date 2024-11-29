@@ -29,19 +29,19 @@ public class Catalog {
         products.add(product);
     }
 
-    public void removeProduct(long catalogId) {
-        for(Product product : products) {
-            if(product.getProductId() == catalogId) {
-                products.remove(product);
-            }
-        };
+    public void removeProduct(Long productId) {
+        if (this.products != null) {
+            this.products.removeIf(product -> product.getProductId() == productId);
+        }
     }
 
     public void addProducts(List<Product> products) {
         this.products.addAll(products);
     }
-
-    public void removeProducts(List<Product> products) {
-        this.products.removeAll(products);
+//TODO fix this bullshit
+    public void removeProducts(List<Product> productsToRemove) {
+        if (this.products != null) {
+            this.products.removeAll(productsToRemove);
+        }
     }
 }

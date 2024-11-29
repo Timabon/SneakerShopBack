@@ -13,37 +13,56 @@ import java.util.List;
 public class CatalogController {
 
     private final CatalogService catalogService;
+
     public CatalogController(CatalogService catalogService) {
         this.catalogService = catalogService;
     }
 
     @GetMapping
-    public List<Catalog> getAllCatalogs() {
-        return catalogService.getAllCatalogs();
+    public ResponseEntity<List<Catalog>> getAllCatalogs() {
+        List<Catalog> catalogs = catalogService.getAllCatalogs();
+        return ResponseEntity.ok(catalogs);
     }
 
     @GetMapping("{id}")
+    public ResponseEntity<Catalog> getCatalogById(@PathVariable Long id) {
+        Catalog catalog = catalogService.getCatalogById(id);
+        return ResponseEntity.ok(catalog);
+    }
+
+    @GetMapping("products/{id}")
     public ResponseEntity<List<Product>> getAllProductsFromCatalog(@PathVariable Long id) {
-        return catalogService.getAllProductsFromCatalog(id);
+        List<Product> products = catalogService.getAllProductsFromCatalog(id);
+        return ResponseEntity.ok(products);
     }
 
     @PostMapping
     public ResponseEntity<Catalog> createCatalog(@RequestBody String catalogName) {
-        return ResponseEntity.ok(catalogService.createCatalog(catalogName));
+        Catalog createdCatalog = catalogService.createCatalog(catalogName);
+        return ResponseEntity.ok(createdCatalog);
     }
 
-    @PostMapping("/{id}/addproduct")
+    @PostMapping("{id}/addproduct")
     public ResponseEntity<Catalog> addProductToCatalog(@PathVariable Long id, @RequestBody Product product) {
-        return catalogService.addProductToCatalog(id, product);
+        Catalog updatedCatalog = catalogService.addProductToCatalog(id, product);
+        return ResponseEntity.ok(updatedCatalog);
     }
 
     @PostMapping("{id}/addproducts")
     public ResponseEntity<Catalog> addProductsToCatalog(@PathVariable Long id, @RequestBody List<Product> products) {
-        return catalogService.addProductsToCatalog(id, products);
+        Catalog updatedCatalog = catalogService.addProductsToCatalog(id, products);
+        return ResponseEntity.ok(updatedCatalog);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Catalog> removeProductFromCatalog(@PathVariable Long id, @RequestBody Product product) {
-        return catalogService.removeProductFromCatalog(id, product);
+    @DeleteMapping("{id}/{productId}")
+    public ResponseEntity<Void> removeProductFromCatalog(@PathVariable Long id, @PathVariable Long productId) {
+        catalogService.removeProductFromCatalog(id, productId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> removeProductsFromCatalog(@PathVariable Long id, @RequestBody List<Product> products) {
+        catalogService.removeProductsFromCatalog(id, products);
+        return ResponseEntity.noContent().build();
     }
 }
