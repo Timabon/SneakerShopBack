@@ -22,7 +22,7 @@ public class Catalog {
     @Column
     private String catalogName;
 
-    @ManyToMany
+    @ManyToMany //tells db it can have ManytoMany relation -> 1 catalog can have a lot of Products, and 1 Product can be in a lot of Catalogs
     List<Product> products;
 
     public void addProduct(Product product) {
@@ -38,10 +38,14 @@ public class Catalog {
     public void addProducts(List<Product> products) {
         this.products.addAll(products);
     }
-//TODO fix this bullshit
-    public void removeProducts(List<Product> productsToRemove) {
-        if (this.products != null) {
-            this.products.removeAll(productsToRemove);
-        }
+
+public void removeProducts(List<Product> productsToRemove) {
+    if (this.products != null) {
+        List<Long> productIdsToRemove = productsToRemove.stream()
+                .map(Product::getProductId)
+                .toList(); //iterate through products, gets productIds and put it into new lsit
+        this.products.removeIf(product -> productIdsToRemove.contains(product.getProductId()));
+        //if any productId matches productId in products, delete this product
     }
+}
 }

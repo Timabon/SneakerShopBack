@@ -22,7 +22,7 @@ public class Product {
     @Column (name = "product_description")
     private String productDescription;
     @Column (name = "product_price")
-    private BigDecimal productPrice;
+    private BigDecimal productPrice; //example: so we can set the price 54.75
 
     @Override
     public String toString() {

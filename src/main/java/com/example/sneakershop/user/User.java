@@ -4,16 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@Entity
-@Table(name = "users")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@Entity                 //tells to create a table in db
+@Table(name = "users") //creates table in the database with name "users"
+@NoArgsConstructor     //creates empty constructor
+@AllArgsConstructor    //creates all arguments constructor
+@Getter               //self-explanatory
 @Setter
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Means that is gonna be primary key in db
+    @Column(name = "user_id") //names the column in db
     private long id;
     @Column(name = "name")
     private String name;

@@ -8,19 +8,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/v1/users")
+@RestController //tells Spring that it is a Controller
+@CrossOrigin(origins = "http://localhost:4200") // allows requests from localhost:4200
+@RequestMapping("/api/v1/users") //that is our url after :4200
 public class UserController {
 
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("{id}") //Get the page for url "http://localhost:4200/api/v1/users/{id}"
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
