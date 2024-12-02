@@ -1,6 +1,9 @@
 package com.example.sneakershop.basket;
 
 import com.example.sneakershop.product.Product;
+import com.example.sneakershop.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -10,12 +13,21 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-@SessionScope
-@Component
+@Entity
 @Getter
 @Setter
+@Table(name = "basket")
 public class Basket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @ElementCollection
     private Map<Product, Integer> productMap;
+    @OneToOne(mappedBy = "basket", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private User user;
 
     public Basket() {
         this.productMap = new HashMap<>();

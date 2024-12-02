@@ -1,5 +1,6 @@
 package com.example.sneakershop.user;
 
+import com.example.sneakershop.basket.Basket;
 import com.example.sneakershop.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        user.setBasket(new Basket());
         return userRepository.save(user);
     }
 

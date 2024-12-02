@@ -1,5 +1,6 @@
 package com.example.sneakershop.user;
 
+import com.example.sneakershop.basket.Basket;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,8 +22,16 @@ public class User {
     private String password;
     @Column(name = "e_mail",unique = true)
     private String email;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, optional = true)
+    @JoinColumn(name = "basket_id", referencedColumnName = "id", nullable = true)
+    private Basket basket;
 
     public User(String name) {
         this.name = name;
+    }
+
+    public void setBasket(Basket basket) {
+        this.basket = basket;
+        basket.setUser(this);
     }
 }

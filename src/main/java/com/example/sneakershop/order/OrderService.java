@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,12 +20,13 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
     }
-
+    //when user creates order it has to add all the products from basket instantly
     public Order createOrder(OrderDTO orderDTO) {
         Optional<User> user = userRepository.findById(orderDTO.getUserId());
         Order order = new Order();
         order.setUser(user.get());
         order.setOrderDescription(orderDTO.getOrderDescription());
+
         return orderRepository.save(order);
     }
 
@@ -62,6 +64,17 @@ public class OrderService {
         }
         Order order = orderRepository.findByOrderId(id);
         order.addProduct(product);
+        orderRepository.save(order);
         return ResponseEntity.ok().build();
+    }
+
+    public void addProductsToOrder(Long id,Map<Product, Integer> products) {
+        if(orderRepository.findByOrderId(id) == null) {
+            throw new ResourceNotFoundException("Order with id " + id + " not found");
+        }
+        Order order = orderRepository.findByOrderId(id);
+        order.addProducts(products);
+        orderRepository.save(order);
+
     }
 }

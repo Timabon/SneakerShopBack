@@ -1,5 +1,6 @@
 package com.example.sneakershop.order;
 
+import com.example.sneakershop.basket.Basket;
 import com.example.sneakershop.product.Product;
 import com.example.sneakershop.user.User;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,9 +44,19 @@ public class Order {
     @CollectionTable(name = "products_table", joinColumns = @JoinColumn(name = "order_id"))
     Map<Product, Integer> productMap = new HashMap<>();
 
+    private BigDecimal totalPrice;
+
+    public Order(Basket basket){
+        this.productMap = basket.getProductMap();
+        this.totalPrice = basket.calculateTotal();
+    }
 
     public void addProduct(Product product) {
         this.productMap.merge(product, 1, Integer::sum);
+    }
+
+    public void addProducts(Map<Product, Integer> products) {
+        products.forEach((product, amount) -> this.productMap.put(product, amount));
     }
 
 
