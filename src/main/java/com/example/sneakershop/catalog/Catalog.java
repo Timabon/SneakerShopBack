@@ -2,6 +2,7 @@ package com.example.sneakershop.catalog;
 
 import com.example.sneakershop.product.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class Catalog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long catalogId;
-
+    @NotBlank(message = "Catalog name cannot be empty")
     @Column
     private String catalogName;
 
