@@ -1,5 +1,7 @@
 package com.example.sneakershop.basket;
 
+import com.example.sneakershop.order.Order;
+import com.example.sneakershop.order.OrderDTO;
 import com.example.sneakershop.order.OrderService;
 import com.example.sneakershop.product.Product;
 import com.example.sneakershop.user.User;
@@ -27,7 +29,13 @@ public class BasketService {
     public Basket getBasketForUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         return user.getBasket() != null ? user.getBasket() : createBasketForUser(user);
+    }
+
+    public Basket createBasket(){
+        Basket basket = new Basket();
+        return basketRepository.save(basket);
     }
 
     public Basket createBasketForUser(User user) {
@@ -66,12 +74,15 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
-    public void checkoutBasket(Long userId, Long orderId) {
-        Basket basket = getBasketForUser(userId);
+    public void checkoutBasket(OrderDTO orderDTO ) {
+        Basket basket = getBasketForUser(orderDTO.getUserId());
+        if(basket.getProductMap().isEmpty()) {
+            throw new RuntimeException("Basket is empty");
+        }
         Map<Product, Integer> products = basket.getProductMap();
-
+        Order order = orderService.createOrder(orderDTO);
         // Assume `OrderService` has a method to create or add products to an order
-        orderService.addProductsToOrder(orderId, products);
+        orderService.addProductsToOrder(orderDTO.getUserId(),products);
 
         // Clear the basket after checkout
         basket.clearBasket();

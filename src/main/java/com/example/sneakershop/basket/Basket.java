@@ -24,9 +24,15 @@ public class Basket {
     private Long id;
 
     @ElementCollection
+    @MapKeyJoinColumn(name = "product_id") // Join column for the product
+    @Column(name = "product_amount") // Column for the quantity
+    @CollectionTable(
+            name = "basket_product", // Define the name of the join table
+            joinColumns = @JoinColumn(name = "basket_id") // Foreign key for Basket
+    )
     private Map<Product, Integer> productMap;
-    @OneToOne(mappedBy = "basket", cascade = CascadeType.ALL)
-    @JsonIgnore
+
+    @OneToOne(mappedBy = "basket")
     private User user;
 
     public Basket() {

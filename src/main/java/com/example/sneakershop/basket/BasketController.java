@@ -1,5 +1,6 @@
 package com.example.sneakershop.basket;
 
+import com.example.sneakershop.order.OrderDTO;
 import com.example.sneakershop.order.OrderService;
 import com.example.sneakershop.product.Product;
 import com.example.sneakershop.user.User;
@@ -24,32 +25,32 @@ public class BasketController {
         this.orderService = orderService;
     }
 
-    @GetMapping
-    public ResponseEntity<Basket> getBasketForUser(@RequestParam Long userId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<Basket> getBasketForUser(@PathVariable Long userId) {
         Basket basket = basketService.getBasketForUser(userId);
         return ResponseEntity.ok(basket);
     }
 
-    @PostMapping
-    public ResponseEntity<String> addProduct(@RequestParam Long userId, @RequestBody Product product, @RequestParam int amount) {
+    @PostMapping("{userId}")
+    public ResponseEntity<String> addProduct(@PathVariable Long userId, @RequestBody Product product, @RequestParam int amount) {
         basketService.addProductToBasket(userId, product, amount);
         return ResponseEntity.ok("Product added successfully");
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateProduct(@RequestParam Long userId, @RequestBody Product product, @RequestParam int amount) {
+    @PutMapping("{userId}")
+    public ResponseEntity<String> updateProduct(@PathVariable Long userId, @RequestBody Product product, @RequestParam int amount) {
         basketService.updateProductInBasket(userId, product, amount);
         return ResponseEntity.ok("Product updated successfully");
     }
 
     @GetMapping("/total")
-    public ResponseEntity<String> calculateTotal(@RequestParam Long userId) {
+    public ResponseEntity<String> calculateTotal(@PathVariable Long userId) {
         BigDecimal total = basketService.calculateBasketTotal(userId);
         return ResponseEntity.ok("Total price is: " + total);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> removeProduct(@RequestParam Long userId, @RequestBody Product product) {
+    public ResponseEntity<String> removeProduct(@PathVariable Long userId, @RequestBody Product product) {
         basketService.removeProductFromBasket(userId, product);
         return ResponseEntity.ok("Product removed successfully");
     }
@@ -61,8 +62,13 @@ public class BasketController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<String> checkoutBasket(@RequestParam Long userId, @RequestParam Long orderId) {
-        basketService.checkoutBasket(userId, orderId);
-        return ResponseEntity.ok("Basket checked out successfully");
+    public ResponseEntity<String> checkout(
+            @RequestParam Long userId,
+            @RequestParam String orderDescription){
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setUserId(userId);
+        orderDTO.setOrderDescription(orderDescription);
+        basketService.checkoutBasket(orderDTO);
+        return ResponseEntity.ok("Order created successfully");
     }
 }

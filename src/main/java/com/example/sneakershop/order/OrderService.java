@@ -1,9 +1,11 @@
 package com.example.sneakershop.order;
 
+import com.example.sneakershop.basket.BasketService;
 import com.example.sneakershop.exception.ResourceNotFoundException;
 import com.example.sneakershop.product.Product;
 import com.example.sneakershop.user.User;
 import com.example.sneakershop.user.UserRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +18,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    public OrderService(OrderRepository orderRepository,UserRepository userRepository) {
+    private final BasketService basketService;
+
+    public OrderService(@Lazy OrderRepository orderRepository, @Lazy UserRepository userRepository,@Lazy BasketService basketService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.basketService = basketService;
     }
     //when user creates order it has to add all the products from basket instantly
     public Order createOrder(OrderDTO orderDTO) {
