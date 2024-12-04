@@ -54,7 +54,7 @@ public class Order {
     public void addProduct(Product product) {
         this.productMap.merge(product, 1, Integer::sum);
     }
-
+//TODO fix it, it adds product to the same product map instead of creating a new one for each order.
     public void addProducts(Map<Product, Integer> products) {
         products.forEach((product, amount) -> this.productMap.put(product, amount));
     }

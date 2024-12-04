@@ -70,6 +70,5 @@ public class Basket {
         productMap.clear();
     }
 
-    //TODO Create a new function, for creating order with products from basket
 
 }

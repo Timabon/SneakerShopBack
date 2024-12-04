@@ -55,22 +55,20 @@ public class OrderService {
         return orderRepository.save(updatedOrder);
     }
 
-    public ResponseEntity<Order> deleteOrder(Long id){
+    public void deleteOrder(Long id){
         if(orderRepository.findById(id).isEmpty()) {
             throw new ResourceNotFoundException("Order with id " + id + " not found");
         }
         orderRepository.deleteById(id);
-        return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<Order> addProductToOrder(Long id, Product product){
-        if(orderRepository.findByOrderId(id) == null) {
+    public Order addProductToOrder(Long id, Product product) {
+        if (orderRepository.findByOrderId(id) == null) {
             throw new ResourceNotFoundException("Order with id " + id + " not found");
         }
         Order order = orderRepository.findByOrderId(id);
         order.addProduct(product);
-        orderRepository.save(order);
-        return ResponseEntity.ok().build();
+        return orderRepository.save(order);
     }
 
     public void addProductsToOrder(Long id,Map<Product, Integer> products) {

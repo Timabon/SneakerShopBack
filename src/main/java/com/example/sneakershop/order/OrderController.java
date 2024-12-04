@@ -20,7 +20,7 @@ public class OrderController {
     public Order createOrder(@RequestBody OrderDTO orderDTO) {
         return orderService.createOrder(orderDTO);
     }
-
+    //TODO change to getOrderOfUser
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrder(@PathVariable long id) {
         Order order = orderService.getOrder(id);
@@ -31,7 +31,7 @@ public class OrderController {
     public List<Order> getAllOrdersOfUser(@PathVariable long id) {
         return orderService.getAllOrdersOfUser(id);
     }
-
+//TODO i'm not sure if the order, even the description should be possible to change
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable long id, @RequestBody OrderDTO orderDTO) {
         orderService.updateOrder(id, orderDTO);
@@ -41,6 +41,6 @@ public class OrderController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Order> deleteOrder(@PathVariable long id) {
         orderService.deleteOrder(id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }
