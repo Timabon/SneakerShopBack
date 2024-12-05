@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Or;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +20,6 @@ import java.util.Map;
 @Table(name = "orders")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Order {
     @Id
@@ -42,19 +42,14 @@ public class Order {
     @MapKeyJoinColumn(name = "product_id")
     @Column(name = "product_amount")
     @CollectionTable(name = "products_table", joinColumns = @JoinColumn(name = "order_id"))
-    Map<Product, Integer> productMap = new HashMap<>();
+    Map<Product, Integer> productMap;
 
     private BigDecimal totalPrice;
 
-    public Order(Basket basket){
-        this.productMap = basket.getProductMap();
-        this.totalPrice = basket.calculateTotal();
+    public Order(){
+        this.productMap = new HashMap<>();
     }
 
-    public void addProduct(Product product) {
-        this.productMap.merge(product, 1, Integer::sum);
-    }
-//TODO fix it, it adds product to the same product map instead of creating a new one for each order.
     public void addProducts(Map<Product, Integer> products) {
         products.forEach((product, amount) -> this.productMap.put(product, amount));
     }

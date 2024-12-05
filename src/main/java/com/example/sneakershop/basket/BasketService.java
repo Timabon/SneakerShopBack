@@ -82,7 +82,7 @@ public class BasketService {
         Map<Product, Integer> products = basket.getProductMap();
         Order order = orderService.createOrder(orderDTO);
         // Assume `OrderService` has a method to create or add products to an order
-        orderService.addProductsToOrder(orderDTO.getUserId(),products);
+        orderService.addProductsToOrder(order.getOrderId(),products);
 
         // Clear the basket after checkout
         basket.clearBasket();

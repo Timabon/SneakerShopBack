@@ -21,9 +21,9 @@ public class OrderController {
         return orderService.createOrder(orderDTO);
     }
     //TODO change to getOrderOfUser
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrder(@PathVariable long id) {
-        Order order = orderService.getOrder(id);
+    @GetMapping("/{userId}/{orderId}")
+    public ResponseEntity<Order> getOrder(@PathVariable long userId, @PathVariable long orderId) {
+        Order order = orderService.getOrder(userId, orderId);
         return ResponseEntity.ok(order);
     }
 

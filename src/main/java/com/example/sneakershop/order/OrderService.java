@@ -35,17 +35,23 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public Order getOrder(Long orderId) {
-        if(orderRepository.findById(orderId).isEmpty()) {
-            throw new ResourceNotFoundException("Order with id " + orderId + " not found");
+    public Order getOrder(Long userId, Long orderId) {
+        List<Order> userOrders = getAllOrdersOfUser(userId);
+        for (Order order : userOrders) {
+            if (order.getOrderId().equals(orderId)) {
+                return order;
+            }
         }
-        return orderRepository.findByOrderId(orderId);
+        throw new ResourceNotFoundException("Order not found");
     }
 
     public List<Order> getAllOrdersOfUser(Long userId) {
-        return orderRepository.findByUserId(userId);
+        if(userRepository.findById(userId).isEmpty()) {
+            throw new ResourceNotFoundException("User with id " + userId + " not found");
+        }
+        return orderRepository.findAllByUserId(userId);
     }
-
+//TODO Probably delete it
     public Order updateOrder(Long orderId, OrderDTO orderDTO) {
         if(orderRepository.findByOrderId(orderId) == null) {
             throw new ResourceNotFoundException("Order with id " + orderId + " not found");
@@ -62,14 +68,6 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public Order addProductToOrder(Long id, Product product) {
-        if (orderRepository.findByOrderId(id) == null) {
-            throw new ResourceNotFoundException("Order with id " + id + " not found");
-        }
-        Order order = orderRepository.findByOrderId(id);
-        order.addProduct(product);
-        return orderRepository.save(order);
-    }
 
     public void addProductsToOrder(Long id,Map<Product, Integer> products) {
         if(orderRepository.findByOrderId(id) == null) {
