@@ -1,5 +1,7 @@
 package com.example.sneakershop.user;
 
+import com.example.sneakershop.dto.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +35,8 @@ public class UserController {
 
     // Create a new user
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User createdUser = userService.createUser(user);
+    public ResponseEntity<User> createUser(@Valid final UserDTO userDTO) {
+        final User createdUser = userService.createUser(userDTO);
         return ResponseEntity.ok(createdUser);
     }
 

@@ -22,15 +22,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Means that is gonna be primary key in db
     @Column(name = "user_id") //names the column in db
     private long id;
-    @NotNull(message = "name shouldn't be null")
-    @Size(min = 2, max = 15)
+
     @Column(name = "name")
     private String name;
-    @NotBlank(message = "password cannot be blank")
+
     @Column(name = "password")
     private String password;
-    @Email
-    @NotBlank(message = "email cannot be blank")
+
     @Column(name = "e_mail",unique = true)
     private String email;
 

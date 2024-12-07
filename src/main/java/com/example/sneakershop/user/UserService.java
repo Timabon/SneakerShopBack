@@ -2,6 +2,7 @@ package com.example.sneakershop.user;
 
 import com.example.sneakershop.basket.Basket;
 import com.example.sneakershop.basket.BasketService;
+import com.example.sneakershop.dto.UserDTO;
 import com.example.sneakershop.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,10 +27,13 @@ public class UserService {
        return userRepository.findAll();
     }
 
-    public User createUser(User user) {
+    public User createUser(UserDTO userDTO) {
         Basket basket = basketService.createBasket();
-        user.setBasket(basket);
+        final User user = new User();
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setBasket(basket);
         return userRepository.save(user);
     }
 

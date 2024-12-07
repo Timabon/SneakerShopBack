@@ -29,8 +29,8 @@ public class MainPageController {
         return userService.getAllUsers();
     }
 
-
-    @PostMapping("/login")
+    //Login implementation will come later
+    /*@PostMapping("/login")
         public Map<String, String> submitUsername(@RequestBody Map<String, String> payload) {
             String username = payload.get("username");
             // Process the username here (e.g., save to database, etc.)
@@ -41,6 +41,6 @@ public class MainPageController {
             User logged_in = new User(username);
             userService.createUser(logged_in);
             return response;
-        }
+        }*/
 
 }
