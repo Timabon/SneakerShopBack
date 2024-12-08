@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 @Service
-public class CatalogService {
+public class CatalogService implements ICatalogService {
 
     private final ProductRepository productRepository;
     private final CatalogRepository catalogRepository;
@@ -19,20 +19,24 @@ public class CatalogService {
         this.catalogRepository = catalogRepository;
     }
 
+    @Override
     public Catalog createCatalog(String catalogName) {
         Catalog catalog = new Catalog();
         catalog.setCatalogName(catalogName);
         return catalogRepository.save(catalog);
     }
 
+    @Override
     public List<Catalog> getAllCatalogs() {
         return catalogRepository.findAll();
     }
 
+    @Override
     public Catalog getCatalogById(Long catalogId) {
         return catalogRepository.findById(catalogId).orElseThrow(() -> new ResourceNotFoundException("Catalog not found"));
     }
 
+    @Override
     public Catalog addProductsToCatalog(Long catalogId, List<Product> products) {
         Catalog catalog = catalogRepository.findById(catalogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog not found with id: " + catalogId));
@@ -40,6 +44,7 @@ public class CatalogService {
         return catalogRepository.save(catalog);
     }
 
+    @Override
     public void removeProductsFromCatalog(Long catalogId, List<Product> products) {
         Catalog catalog = catalogRepository.findById(catalogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog not found with id: " + catalogId));
@@ -47,6 +52,7 @@ public class CatalogService {
         catalogRepository.save(catalog);
     }
 
+    @Override
     public void removeProductFromCatalog(Long catalogId, Long productId) {
         Catalog catalog = catalogRepository.findById(catalogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog not found with id: " + catalogId));
@@ -54,12 +60,14 @@ public class CatalogService {
         catalogRepository.save(catalog);
     }
 
+    @Override
     public List<Product> getAllProductsFromCatalog(Long catalogId) {
         Catalog catalog = catalogRepository.findById(catalogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog not found with id: " + catalogId));
         return catalog.getProducts();
     }
 
+    @Override
     public Catalog addProductToCatalog(Long catalogId, Product product) {
         Catalog catalog = catalogRepository.findById(catalogId)
                 .orElseThrow(() -> new ResourceNotFoundException("Catalog not found with id: " + catalogId));

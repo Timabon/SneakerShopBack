@@ -12,10 +12,10 @@ import java.util.List;
 @RequestMapping("/api/v1/catalogs")
 public class CatalogController {
 
-    private final CatalogService catalogService;
+    private final ICatalogService catalogService;
 
-    public CatalogController(CatalogService catalogService) {
-        this.catalogService = catalogService;
+    public CatalogController(ICatalogService iCatalogService) {
+        this.catalogService = iCatalogService;
     }
 
     @GetMapping

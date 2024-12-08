@@ -15,10 +15,11 @@ import java.util.Optional;
 @RequestMapping("/api/v1/users") //that is our url after :4200
 public class UserController {
 
-    private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    private final IUserService userService;
+
+    public UserController(UserService iUserService) {
+        this.userService = iUserService;
     }
 
     @GetMapping("{id}") //Get the page for url "http://localhost:4200/api/v1/users/{id}"
@@ -26,6 +27,7 @@ public class UserController {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
+
     // Get all users
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {

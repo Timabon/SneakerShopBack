@@ -10,9 +10,10 @@ import java.util.List;
 @RequestMapping("/api/v1/orders")
 public class OrderController {
 
-    private final OrderService orderService;
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    private final IOrderService orderService;
+
+    public OrderController(IOrderService iOrderService) {
+        this.orderService = iOrderService;
     }
 
     @PostMapping()

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,13 +22,13 @@ public class Product {
     @Column(name = "product_id")
     private long productId;
     @NotBlank(message = "product name cannot be empty")
-    @Column (name = "product_name")
+    @Column(name = "product_name")
     private String productName;
-    @Column (name = "product_description")
+    @Column(name = "product_description")
     private String productDescription;
     @Min(10)
     @NotNull(message = "product price cannot be empty")
-    @Column (name = "product_price")
+    @Column(name = "product_price")
     private BigDecimal productPrice; //example: so we can set the price 54.75
 
     @Override

@@ -10,9 +10,9 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final ProductService productService;
+    private final IProductService productService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(IProductService productService) {
         this.productService = productService;
     }
 

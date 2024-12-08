@@ -1,10 +1,9 @@
 package com.example.sneakershop.user;
 
 import com.example.sneakershop.basket.Basket;
-import com.example.sneakershop.basket.BasketService;
+import com.example.sneakershop.basket.IBasketService;
 import com.example.sneakershop.dto.UserDTO;
 import com.example.sneakershop.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,23 +11,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
     private final UserRepository userRepository;
-    private final BasketService basketService;
+    private final IBasketService IBasketService;
     private PasswordEncoder passwordEncoder;
-    public UserService(UserRepository userRepository, BasketService basketService, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, IBasketService IBasketService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.basketService = basketService;
+        this.IBasketService = IBasketService;
         this.passwordEncoder = passwordEncoder;
     }
 
-
+    @Override
     public List<User> getAllUsers() {
-       return userRepository.findAll();
+        return userRepository.findAll();
     }
 
+    @Override
     public User createUser(UserDTO userDTO) {
-        Basket basket = basketService.createBasket();
+        Basket basket = IBasketService.createBasket();
         final User user = new User();
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
@@ -37,17 +38,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
-    // Get a user by email
+    @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // Update user information
+    @Override
     public User updateUser(Long id, User userDetails) {
         Optional<User> user = userRepository.findById(id); //Optional because user could be null
         if (user.isPresent()) {
@@ -59,8 +61,9 @@ public class UserService {
         return null;
     }
 
-    // Delete a user by ID
+    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
 }

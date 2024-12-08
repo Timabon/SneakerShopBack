@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
-public class BasketService {
+public class BasketService implements IBasketService {
 
     private final BasketRepository basketRepository;
     private final UserRepository userRepository;
@@ -26,6 +26,7 @@ public class BasketService {
         this.orderService = orderService;
     }
 
+    @Override
     public Basket getBasketForUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -33,11 +34,13 @@ public class BasketService {
         return user.getBasket() != null ? user.getBasket() : createBasketForUser(user);
     }
 
+    @Override
     public Basket createBasket(){
         Basket basket = new Basket();
         return basketRepository.save(basket);
     }
 
+    @Override
     public Basket createBasketForUser(User user) {
         Basket basket = new Basket();
         basket.setUser(user);
@@ -45,36 +48,42 @@ public class BasketService {
         return basketRepository.save(basket);
     }
 
+    @Override
     public void addProductToBasket(Long userId, Product product, int amount) {
         Basket basket = getBasketForUser(userId);
         basket.addProduct(product, amount);
         basketRepository.save(basket);
     }
 
+    @Override
     public void updateProductInBasket(Long userId, Product product, int amount) {
         Basket basket = getBasketForUser(userId);
         basket.updateProductAmount(product, amount);
         basketRepository.save(basket);
     }
 
+    @Override
     public BigDecimal calculateBasketTotal(Long userId) {
         Basket basket = getBasketForUser(userId);
         return basket.calculateTotal();
     }
 
+    @Override
     public void removeProductFromBasket(Long userId, Product product) {
         Basket basket = getBasketForUser(userId);
         basket.removeProduct(product);
         basketRepository.save(basket);
     }
 
+    @Override
     public void clearBasket(Long userId) {
         Basket basket = getBasketForUser(userId);
         basket.clearBasket();
         basketRepository.save(basket);
     }
 
-    public void checkoutBasket(OrderDTO orderDTO ) {
+    @Override
+    public void checkoutBasket(OrderDTO orderDTO) {
         Basket basket = getBasketForUser(orderDTO.getUserId());
         if(basket.getProductMap().isEmpty()) {
             throw new RuntimeException("Basket is empty");
