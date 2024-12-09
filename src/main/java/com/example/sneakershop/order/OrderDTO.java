@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderDTO {
 
-    private String orderDescription;
-    private Long userId;
+  private String orderDescription;
+  private Long userId;
 }

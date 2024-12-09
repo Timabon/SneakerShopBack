@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface IProductService {
 
-    Product getProductById(Long id);
+  Product getProductById(Long id);
 
-    List<Product> getAllProducts();
+  List<Product> getAllProducts();
 
-    Product createProduct(Product product);
+  Product createProduct(Product product);
 
-    Product updateProduct(Long id, Product product);
+  Product updateProduct(Long id, Product product);
 
-    void deleteProduct(Long id);
+  void deleteProduct(Long id);
 }
