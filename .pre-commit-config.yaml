@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: format-code
+        name: Format Java Code
+        entry: mvn spotless:apply
+        language: system
+        types: [java]
+        pass_filenames: false  # This is the critical part
