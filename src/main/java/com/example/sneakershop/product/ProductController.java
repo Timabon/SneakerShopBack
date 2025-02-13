@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.example.sneakershop.s3.S3Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,9 +63,28 @@ public class ProductController {
   }
 
   @PostMapping
-  public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-    Product createdProduct = productService.createProduct(product);
-    return ResponseEntity.ok(createdProduct);
+  public ResponseEntity<Product> createProduct(@RequestParam("products") String productJson,
+                                               @RequestParam(value = "files", required = false) MultipartFile[] files) {
+    try{
+      ObjectMapper objectMapper = new ObjectMapper();
+      Product product = objectMapper.readValue(productJson, Product.class);
+
+      Product savedProduct = productService.createProduct(product);
+
+      if(files != null){
+        List<String> fileUrls = new ArrayList<>();
+        for (MultipartFile file : files){
+          String fileUrl = s3Service.uploadFile(file.getOriginalFilename(), file.getBytes());
+          fileUrls.add(fileUrl);
+        }
+        savedProduct.setImageUrls(fileUrls);
+        productService.updateProduct(savedProduct.getProductId(), savedProduct);
+      }
+      return ResponseEntity.ok(savedProduct);
+    }catch (IOException e){
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
   }
 
   @PutMapping("/{id}")

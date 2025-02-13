@@ -2,14 +2,18 @@ package com.example.sneakershop.product;
 
 import com.example.sneakershop.exception.ResourceNotFoundException;
 import java.util.List;
+
+import com.example.sneakershop.s3.S3Service;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProductService implements IProductService {
   private final ProductRepository productRepository;
+  private final S3Service s3Service;
 
-  public ProductService(ProductRepository productRepository) {
+  public ProductService(ProductRepository productRepository, S3Service s3Service) {
     this.productRepository = productRepository;
+      this.s3Service = s3Service;
   }
 
   @Override

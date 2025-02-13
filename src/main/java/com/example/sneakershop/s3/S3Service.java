@@ -52,7 +52,7 @@ public class S3Service {
 
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileData));
 
-        return "https://" + bucketName + ".s3.amazonaws.com/" + fileKey;
+        return "https://" + bucketName + ".s3.amazonaws.com/" + fileKey.replace("+", "%2B");
     }
 
     // Utility method to detect content type
