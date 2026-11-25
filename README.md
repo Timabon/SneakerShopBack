@@ -20,3 +20,9 @@ On Render, configure the same four events on a Stripe sandbox webhook destinatio
 Set `RESEND_API_KEY` to a Resend sending key and `CHECKOUT_CONFIRMATION_TEST_RECIPIENT` to your Resend account email. Enter that same email address in Stripe Checkout. The default sender is `SneakerShop <onboarding@resend.dev>`. When using a verified sending domain, set `CHECKOUT_CONFIRMATION_FROM` to an address on that domain.
 
 Spring queues one confirmation for a verified paid order if the Stripe Checkout email matches the configured test recipient. Mail delivery runs separately from payment processing and retries with a stable Resend idempotency key.
+
+## Google sign-in
+
+Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the backend environment. Register the backend URL ending in `/login/oauth2/code/google` as an authorized redirect URI in Google Cloud. Spring uses Render's public service URL by default, and `GOOGLE_REDIRECT_URI` can override the full callback URL. Use the same storefront origin as Checkout for sign-in redirects.
+
+The first verified Google sign-in creates a SneakerShop account. If the email is already registered with a password, the shopper signs in with that password.

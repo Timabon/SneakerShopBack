@@ -40,6 +40,10 @@ public class User implements UserDetails {
   private String email;
 
   @JsonIgnore
+  @Column(name = "google_subject")
+  private String googleSubject;
+
+  @JsonIgnore
   @JsonBackReference
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "basket_id", referencedColumnName = "id")

@@ -1,7 +1,6 @@
 package com.example.sneakershop.security;
 
 import com.example.sneakershop.security.jwt.JwtAuthFilter;
-import com.example.sneakershop.security.jwt.JwtService;
 import com.example.sneakershop.user.User;
 import com.example.sneakershop.user.UserRepository;
 import jakarta.servlet.DispatcherType;
@@ -23,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -38,15 +36,13 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final JwtService jwtService;
     @Value("${checkout.frontend-url}")
     private String checkoutFrontendUrl;
     @Value("${sneakershop.local-demo.enabled}")
     private boolean localDemo;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, JwtService jwtService) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.jwtService = jwtService;
     }
 
   @Bean
@@ -71,14 +67,15 @@ public class SecurityConfig {
   @ConditionalOnProperty(name = {"GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"})
   ClientRegistrationRepository googleClientRegistration(
           @Value("${GOOGLE_CLIENT_ID}") String clientId,
-          @Value("${GOOGLE_CLIENT_SECRET}") String clientSecret) {
+          @Value("${GOOGLE_CLIENT_SECRET}") String clientSecret,
+          @Value("${sneakershop.google.redirect-uri}") String redirectUri) {
     return new InMemoryClientRegistrationRepository(CommonOAuth2Provider.GOOGLE
-            .getBuilder("google").clientId(clientId).clientSecret(clientSecret).build());
+            .getBuilder("google").clientId(clientId).clientSecret(clientSecret).redirectUri(redirectUri).build());
   }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
-          ObjectProvider<ClientRegistrationRepository> oauthClients, UserRepository users) throws Exception {
+          ObjectProvider<ClientRegistrationRepository> oauthClients, GoogleSignIn google) throws Exception {
 
     http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -105,18 +102,11 @@ public class SecurityConfig {
 
     ClientRegistrationRepository clients = oauthClients.getIfAvailable();
     if (clients != null) {
-        String frontendOrigin = checkoutFrontendUrl.replaceFirst("/+$", "");
         http.oauth2Login(oauth2 -> oauth2.clientRegistrationRepository(clients)
-                .successHandler((request, response, authentication) -> {
-                    if (authentication.getPrincipal() instanceof OAuth2User google
-                            && Boolean.TRUE.equals(google.getAttribute("email_verified"))
-                            && google.getAttribute("email") instanceof String email
-                            && users.findByEmail(email) != null) {
-                        response.sendRedirect(frontendOrigin + "/oauth-success?token=" + jwtService.generateToken(email));
-                    } else {
-                        response.sendRedirect(frontendOrigin + "/login");
-                    }
-                }));
+                .authorizationEndpoint(endpoint -> endpoint
+                        .authorizationRequestRepository(new GoogleAuthorizationRequests()))
+                .successHandler(google::success)
+                .failureHandler((request, response, error) -> google.failure(response, "google_sign_in_failed")));
     }
     return http.build();
   }

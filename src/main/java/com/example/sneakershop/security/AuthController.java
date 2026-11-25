@@ -8,6 +8,7 @@ import com.example.sneakershop.user.User;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +34,18 @@ public class AuthController {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordService passwordService;
+    private final GoogleSignIn googleSignIn;
     @Value("${sneakershop.local-demo.enabled}")
     private boolean localDemo;
 
-    AuthController(IUserService userService, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, PasswordService passwordService) {
+    AuthController(IUserService userService, PasswordEncoder passwordEncoder, JwtService jwtService,
+            AuthenticationManager authenticationManager, PasswordService passwordService, GoogleSignIn googleSignIn) {
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.passwordService = passwordService;
+        this.googleSignIn = googleSignIn;
     }
 
     @GetMapping("/profile")
@@ -72,6 +76,12 @@ public class AuthController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @PostMapping("/google/exchange")
+    public ResponseEntity<Map<String, String>> exchangeGoogleCode(@RequestBody GoogleCodeRequest request) {
+        return googleSignIn.exchange(request.code(), request.verifier())
+                .map(token -> ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(Map.of("token", token)))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<User> createUser(@RequestBody @Valid final UserDTO userDTO) {
@@ -108,4 +118,6 @@ public class AuthController {
     public record ForgotPasswordRequest(String email) {}
 
     public record ResetPasswordRequest(String token, String password) {}
+
+    public record GoogleCodeRequest(String code, String verifier) {}
 }

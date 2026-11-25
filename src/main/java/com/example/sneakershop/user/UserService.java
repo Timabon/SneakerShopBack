@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements IUserService {
@@ -39,6 +40,21 @@ public class UserService implements IUserService {
     user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
     user.setBasket(basket);
     return userRepository.save(user);
+  }
+
+  @Transactional
+  public Optional<User> findOrCreateGoogleUser(String subject, String email, String name) {
+    Optional<User> existing = userRepository.findByGoogleSubject(subject);
+    if (existing.isPresent() || userRepository.existsByEmailIgnoreCase(email)) {
+      return existing;
+    }
+
+    User user = new User();
+    user.setName(name);
+    user.setEmail(email);
+    user.setGoogleSubject(subject);
+    user.setBasket(new Basket());
+    return Optional.of(userRepository.save(user));
   }
 
   @Override
