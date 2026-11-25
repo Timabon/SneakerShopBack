@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // tells Spring that it is a Controller
-@CrossOrigin(origins = "http://localhost:4200") // allows requests from localhost:4200
-@RequestMapping("/api/v1/users") // that is our url after :4200
+@CrossOrigin(origins = "http://localhost:3000") // allows requests from localhost:3000
+@RequestMapping("/api/v1/users") // that is our url after :3000
 public class UserController {
 
   private final IUserService userService;
@@ -18,7 +18,7 @@ public class UserController {
     this.userService = iUserService;
   }
 
-  @GetMapping("{id}") // Get the page for url "http://localhost:4200/api/v1/users/{id}"
+  @GetMapping("{id}") // Get the page for url "http://localhost:3000/api/v1/users/{id}"
   public ResponseEntity<User> getUser(@PathVariable Long id) {
     User user = userService.getUserById(id);
     return ResponseEntity.ok(user);
@@ -30,6 +30,7 @@ public class UserController {
     List<User> users = userService.getAllUsers();
     return ResponseEntity.ok(users);
   }
+
 
   // Create a new user
   @PostMapping
