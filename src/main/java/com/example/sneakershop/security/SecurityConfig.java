@@ -104,6 +104,7 @@ public class SecurityConfig {
     if (clients != null) {
         http.oauth2Login(oauth2 -> oauth2.clientRegistrationRepository(clients)
                 .authorizationEndpoint(endpoint -> endpoint
+                        .authorizationRequestResolver(new GoogleAuthorizationRequestResolver(clients))
                         .authorizationRequestRepository(new GoogleAuthorizationRequests()))
                 .successHandler(google::success)
                 .failureHandler((request, response, error) -> google.failure(response, "google_sign_in_failed")));
